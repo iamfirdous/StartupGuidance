@@ -1,7 +1,10 @@
 package com.dev.firdous.startupguidance;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.dev.firdous.startupguidance.ui.activities.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,6 +13,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Hello..
+        startActivity(new Intent(this, LoginActivity.class));
     }
 }
