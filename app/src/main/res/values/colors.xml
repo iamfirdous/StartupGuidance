@@ -2,7 +2,8 @@
 <resources>
     <color name="colorPrimary">#53B3DE</color>
     <color name="colorPrimaryDark">#2D8CB7</color>
-    <color name="colorAccent">#FC5308</color>
+    <color name="colorAccent">#ffe000</color>
+    <color name="colorAccent2">#ebfdff</color>
 
     <color name="colorBlue5">#1D7BA6</color>
     <color name="colorBlue4">#2D8CB7</color>
@@ -10,7 +11,16 @@
     <color name="colorBlue2">#2FA3D8</color>
     <color name="colorBlue1">#53B3DE</color>
 
+    <color name="colorBlue0">#6acbf7</color>
+
     <color name="colorTextWhite">#FFFFFF</color>
-    <color name="colorTextHint">#b7b7b7</color>
+    <color name="colorTextBlack">#000000</color>
+    <color name="colorTextHighlight">#b7b7b7</color>
+
+    <color name="colorBlueLight">#c2ecff</color>
+
+    <color name="colorYellow">#FFE000</color>
+
+    <color name="colorStroke">#51565F</color>
 
 </resources>

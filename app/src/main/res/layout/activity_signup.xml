@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_activity_gradient"
+    tools:context="com.dev.firdous.startupguidance.ui.activities.SignupActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_signup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView_addProfileImage_signup"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/ic_add_user_512" />
+
+            <TextView
+                android:id="@+id/textView_addProfileImage_signup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="64dp"
+                android:layout_marginStart="64dp"
+                android:gravity="center"
+                android:text="Add your profile image"
+                android:textColor="@color/colorBlueLight"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_addProfileImage_signup" />
+
+            <EditText
+                android:id="@+id/editText_fullName_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_user_24"
+                android:drawablePadding="16dp"
+                android:hint="Enter your full name*"
+                android:inputType="textPersonName"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_addProfileImage_signup" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_gender_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@+id/editText_fullName_signup"
+                app:layout_constraintTop_toBottomOf="@+id/editText_fullName_signup">
+
+                <RadioButton
+                    android:id="@+id/radioButton_gender_male_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Male*"
+                    android:textColor="@color/colorTextWhite" />
+
+                <RadioButton
+                    android:id="@+id/radioButton_gender_female_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female*"
+                    android:textColor="@color/colorTextWhite" />
+
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/editText_dob_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_birthday_date_24"
+                android:drawablePadding="16dp"
+                android:hint="Select your date of birth*"
+                android:inputType="textEmailAddress"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup_gender_signup" />
+
+            <EditText
+                android:id="@+id/editText_email_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_email_24"
+                android:drawablePadding="16dp"
+                android:hint="Enter your e-mail id*"
+                android:inputType="textEmailAddress"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_dob_signup" />
+
+            <EditText
+                android:id="@+id/editText_phoneNumber_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_phone_24"
+                android:drawablePadding="16dp"
+                android:hint="Enter your phone number"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_email_signup" />
+
+            <EditText
+                android:id="@+id/editText_newPassword_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_key_24"
+                android:drawablePadding="16dp"
+                android:hint="Enter your new password*"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_phoneNumber_signup" />
+
+            <EditText
+                android:id="@+id/editText_reNewPassword_signup"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edittext_gr"
+                android:drawableLeft="@drawable/ic_key_24"
+                android:drawablePadding="16dp"
+                android:hint="Re-enter your new password*"
+                android:inputType="textPassword"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_newPassword_signup" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_progressBar_signup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#7c000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/button_signup"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_button_botton_gr"
+        android:text="Sign up"
+        android:textAllCaps="false"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/textView_error_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f51616"
+        android:padding="4dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextWhite"
+        android:text="Error message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView"
+        android:visibility="gone"/>
+
+</android.support.constraint.ConstraintLayout>

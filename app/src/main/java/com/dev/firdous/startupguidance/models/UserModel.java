@@ -1,7 +1,8 @@
 package com.dev.firdous.startupguidance.models;
 
+import org.joda.time.LocalDate;
+
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * Created by firdous on 18/3/18.
@@ -14,7 +15,7 @@ public class UserModel implements Serializable {
     private String emailId;
     private String phoneNo;
     private String gender;
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
     private String photoLocation;
 
     public UserModel() {
@@ -60,11 +61,11 @@ public class UserModel implements Serializable {
         this.gender = gender;
     }
 
-    public LocalDate getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
