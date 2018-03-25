@@ -1,12 +1,16 @@
 package com.dev.firdous.startupguidance.ui.activities;
 
+import android.Manifest;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dev.firdous.startupguidance.R;
 import com.dev.firdous.startupguidance.models.UserModel;
@@ -25,6 +30,13 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -65,7 +77,13 @@ public class SignupActivity extends AppCompatActivity {
             date = holder.etDOB.getText().toString().trim();
             if(!TextUtils.isEmpty(date)){
                 LocalDate localDate = dtf.parseLocalDate(date);
-                int d = localDate.getDayOfMonth(), m = localDate.getMonthOfYear(), y = localDate.getYear();
+                String d = "" + localDate.getDayOfMonth();
+                d = (d.length() == 1) ? "0" + d : d;
+
+                String m = "" + localDate.getMonthOfYear();
+                m = (m.length() == 1) ? "0" + m : m;
+
+                String y = "" + localDate.getYear();
                 user.setDateOfBirth("" + d + "" + m + "" +y);
             }
             user.setEmailId(holder.etEmail.getText().toString().trim());
@@ -73,12 +91,10 @@ public class SignupActivity extends AppCompatActivity {
             newPassword = holder.etNewPassword.getText().toString().trim();
             reNewPassword = holder.etReNewPassword.getText().toString().trim();
 
-            if(validateForm()){
+            if(validateForm())
                 createAccount();
-            }
-            else {
+            else
                 holder.showError("Fill all required* fields");
-            }
         });
 
         holder.ivAddProfileImage.setOnClickListener(view -> {
@@ -87,17 +103,6 @@ public class SignupActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
         });
-
-//        authStateListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//
-//                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-//
-//                if (firebaseUser != null)
-//                    SignupActivity.this.sendEmailVerification(firebaseUser);
-//            }
-//        };
 
     }
 
@@ -131,37 +136,77 @@ public class SignupActivity extends AppCompatActivity {
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                         if (firebaseUser != null) {
                             firebaseUser.sendEmailVerification()
-                                    .addOnCompleteListener(task1 -> {
-                                        if(task1.isSuccessful()){
-                                            user.setUid(firebaseUser.getUid());
-                                            auth.signOut();
-                                            Intent loginIntent = new Intent(this, LoginActivity.class);
-                                            loginIntent.putExtra("user", user);
-                                            loginIntent.putExtra("filePath", filePath);
-                                            startActivity(loginIntent);
-                                            finish();
-                                        }
-                                        else {
-                                            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmailId(), newPassword);
+                                .addOnCompleteListener(task1 -> {
+                                    if(task1.isSuccessful()){
+                                        user.setUid(firebaseUser.getUid());
+                                        auth.signOut();
+                                        uploadDetails();
+                                        Intent loginIntent = new Intent(this, LoginActivity.class);
+                                        loginIntent.putExtra("accJustCreated", "accJustCreated");
+                                        startActivity(loginIntent);
+                                        finish();
+                                    }
+                                    else {
+                                        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmailId(), newPassword);
 
-                                            firebaseUser.reauthenticate(credential)
-                                                    .addOnCompleteListener(task2 -> {
-                                                        firebaseUser.delete()
-                                                                .addOnCompleteListener(task3 -> {
-                                                                    if(task3.isSuccessful()){
-                                                                        holder.showError("Some error occurred while creating your account. Please try again.");
-                                                                    }
-                                                                });
+                                        firebaseUser.reauthenticate(credential)
+                                            .addOnCompleteListener(task2 -> {
+                                                firebaseUser.delete()
+                                                    .addOnCompleteListener(task3 -> {
+                                                        if(task3.isSuccessful()){
+                                                            holder.showError("Some error occurred while creating your account. Please try again.");
+                                                        }
                                                     });
-                                        }
-                                    });
+                                                });
+                                    }
+                                });
                         }
                     }
                 });
+
+        holder.stopLoading();
     }
 
-    private void sendEmailVerification(FirebaseUser firebaseUser) {
+    private void uploadDetails() {
+        if(user != null){
+            DatabaseReference reference = FirebaseDatabase.getInstance()
+                    .getReference("Users/" + user.getUid());
 
+            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    reference.setValue(user);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+//            if(filePath != null){
+//                final ProgressDialog progressDialog = new ProgressDialog(this);
+//                progressDialog.setTitle("Uploading your profile image...");
+//                progressDialog.show();
+//
+//                StorageReference ref = FirebaseStorage.getInstance().getReference().child("ProfileImages/"+ userModel.getUid());
+//                ref.putFile(filePath)
+//                        .addOnSuccessListener(taskSnapshot -> {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(this, "Profile image uploaded", Toast.LENGTH_SHORT).show();
+//                        })
+//                        .addOnFailureListener(e -> {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        })
+//                        .addOnProgressListener(taskSnapshot -> {
+//                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+//                                    .getTotalByteCount());
+//                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+//                        });
+//            }
+        }
     }
 
     public boolean validateForm(){

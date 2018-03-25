@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#53B3DE</color>
     <color name="colorPrimaryDark">#2D8CB7</color>
-    <color name="colorAccent">#ffe000</color>
+    <color name="colorAccent">#ffca28</color>
     <color name="colorAccent2">#ebfdff</color>
 
     <color name="colorBlue5">#1D7BA6</color>
@@ -19,7 +19,7 @@
 
     <color name="colorBlueLight">#c2ecff</color>
 
-    <color name="colorYellow">#FFE000</color>
+    <color name="colorYellow">#ffca28</color>
 
     <color name="colorStroke">#51565F</color>
 

@@ -53,6 +53,12 @@ public class LoginActivity extends AppCompatActivity {
 
         holder = new LoginViewHolder();
 
+        String accJustCreated = getIntent().getStringExtra("accJustCreated");
+
+        if (accJustCreated != null)
+            if (accJustCreated.equals("accJustCreated"))
+                holder.showError("You need to verify your email before logging in. Please follow the link in your email to verify your account");
+
         holder.buttonLogin.setOnClickListener(view -> {
             email = holder.etEmail.getText().toString().trim();
             password = holder.etPassword.getText().toString().trim();
@@ -80,18 +86,10 @@ public class LoginActivity extends AppCompatActivity {
 
         holder.buttonSignUp.setOnClickListener(view -> {
             startActivity(new Intent(this, SignupActivity.class));
-            finish();
+            if (accJustCreated != null)
+                if (accJustCreated.equals("accJustCreated"))
+                    finish();
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if(auth.getCurrentUser() != null){
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
-        }
     }
 
     private void signIn(String email, String password) {
@@ -105,52 +103,13 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                         if (user.isEmailVerified()) {
-                            // user is verified, so you can finish this activity or send user to activity which you want.
-
-                            Intent intent = getIntent();
-                            UserModel userModel = (UserModel) intent.getSerializableExtra("user");
-
-                            if(userModel != null){
-                                DatabaseReference reference = FirebaseDatabase.getInstance()
-                                        .getReference("Users")
-                                        .child(user.getUid());
-
-                                reference.setValue(userModel);
-
-                                Uri filePath = intent.getParcelableExtra("filePath");
-
-                                if(filePath != null){
-                                    final ProgressDialog progressDialog = new ProgressDialog(this);
-                                    progressDialog.setTitle("Uploading your profile image...");
-                                    progressDialog.show();
-
-                                    StorageReference ref = FirebaseStorage.getInstance().getReference().child("ProfileImages/"+ userModel.getUid());
-                                    ref.putFile(filePath)
-                                            .addOnSuccessListener(taskSnapshot -> {
-                                                progressDialog.dismiss();
-                                                Toast.makeText(this, "Profile image uploaded", Toast.LENGTH_SHORT).show();
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                progressDialog.dismiss();
-                                                Toast.makeText(this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            })
-                                            .addOnProgressListener(taskSnapshot -> {
-                                                double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-                                                        .getTotalByteCount());
-                                                progressDialog.setMessage("Uploaded "+(int)progress+"%");
-                                            });
-                                }
-                            }
-
                             Toast.makeText(this, "Authentication successful", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(this, HomeActivity.class));
+                            finish();
                         }
                         else {
-                            // email is not verified, so just prompt the message to the user and restart this activity.
-                            // NOTE: don't forget to log out the user.
                             holder.showError("Authentication failed. Make sure you verified your email.");
                             FirebaseAuth.getInstance().signOut();
-                            //restart this activity
                         }
                     }
                     else {
