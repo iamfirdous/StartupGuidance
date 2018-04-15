@@ -3,6 +3,7 @@ package com.dev.firdous.startupguidance.ui.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private String email, password;
 
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +88,43 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        holder.buttonLoginGoogle.setOnClickListener(view -> {
+            startActivityForResult(googleSignInClient.getSignInIntent(), RC_SIGN_IN);
+        });
+
         holder.buttonSignUp.setOnClickListener(view -> {
             startActivity(new Intent(this, SignupActivity.class));
             if (accJustCreated != null)
                 if (accJustCreated.equals("accJustCreated"))
                     finish();
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                Log.e("AuthFailed1", "Google sign in failed");
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.e("AuthFailed2", "Google sign in failed");
+                signIn(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.e("AuthFailed", "Google sign in failed : " + e.getMessage(), e);
+            }
+        }
     }
 
     private void signIn(String email, String password) {
@@ -120,6 +155,27 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    private void signIn(GoogleSignInAccount account){
+
+        holder.startLoading();
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        auth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()){
+                        Toast.makeText(this, "Authentication successful", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(this, HomeActivity.class));
+                    }
+                    else {
+                        Log.e("AuthFailed", task.getException().toString());
+                        holder.showError("Authentication failed.");
+                    }
+                    holder.stopLoading();
+                });
+
+
+    }
+
     class LoginViewHolder {
 
         EditText etEmail, etPassword;
@@ -127,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         Button buttonLogin, buttonLoginGoogle, buttonLoginFacebook, buttonSignUp;
         FrameLayout frameLayoutProgressBar;
 
-        public LoginViewHolder(){
+        LoginViewHolder(){
             etEmail = findViewById(R.id.editText_email_login);
             etPassword = findViewById(R.id.editText_password_login);
             tvForgotPassword = findViewById(R.id.textView_forgotPassword_login);
@@ -139,12 +195,12 @@ public class LoginActivity extends AppCompatActivity {
             frameLayoutProgressBar = findViewById(R.id.frameLayout_progressBar_login);
         }
 
-        public void showError(String errorMessage){
+        void showError(String errorMessage){
             tvError.setVisibility(View.VISIBLE);
             tvError.setText(errorMessage);
         }
 
-        public void startLoading(){
+        void startLoading(){
             tvError.setVisibility(View.GONE);
             etEmail.setEnabled(false);
             etPassword.setEnabled(false);
@@ -156,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
             frameLayoutProgressBar.setVisibility(View.VISIBLE);
         }
 
-        public void stopLoading(){
+        void stopLoading(){
             etEmail.setEnabled(true);
             etPassword.setEnabled(true);
             tvForgotPassword.setEnabled(true);

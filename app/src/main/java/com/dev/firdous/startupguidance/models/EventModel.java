@@ -11,7 +11,7 @@ import java.util.Date;
 public class EventModel implements Reviewable {
 
     private String eventId;
-    private String eventTitle;
+    private String eventName;
     private String description;
     private String photoLocation;
     private Date eventDate;
@@ -36,12 +36,12 @@ public class EventModel implements Reviewable {
         this.eventId = eventId;
     }
 
-    public String getEventTitle() {
-        return eventTitle;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setEventTitle(String eventTitle) {
-        this.eventTitle = eventTitle;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public String getDescription() {

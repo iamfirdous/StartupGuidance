@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#53B3DE</color>
     <color name="colorPrimaryDark">#2D8CB7</color>
-    <color name="colorAccent">#ffca28</color>
+    <color name="colorAccent">#1C9BD5</color>
     <color name="colorAccent2">#ebfdff</color>
 
     <color name="colorBlue5">#1D7BA6</color>
@@ -17,10 +17,15 @@
     <color name="colorTextBlack">#000000</color>
     <color name="colorTextHighlight">#b7b7b7</color>
 
+    <color name="colorListActivityBackground">#eeeeee</color>
+
     <color name="colorBlueLight">#c2ecff</color>
 
-    <color name="colorYellow">#ffca28</color>
+    <color name="colorYellow">#FFE000</color>
 
     <color name="colorStroke">#51565F</color>
+
+    <color name="translucent_scrim_bottom">#98000000</color>
+    <color name="translucent_scrim_top">#00000000</color>
 
 </resources>

@@ -3,6 +3,7 @@ package com.dev.firdous.startupguidance.ui.activities;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,9 +13,13 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -84,7 +89,7 @@ public class SignupActivity extends AppCompatActivity {
                 m = (m.length() == 1) ? "0" + m : m;
 
                 String y = "" + localDate.getYear();
-                user.setDateOfBirth("" + d + "" + m + "" +y);
+                user.setDateOfBirth(d +  m + y);
             }
             user.setEmailId(holder.etEmail.getText().toString().trim());
             user.setPhoneNo(holder.etPhoneNumber.getText().toString().trim());
@@ -162,9 +167,8 @@ public class SignupActivity extends AppCompatActivity {
                                 });
                         }
                     }
+                    holder.stopLoading();
                 });
-
-        holder.stopLoading();
     }
 
     private void uploadDetails() {
@@ -289,6 +293,8 @@ public class SignupActivity extends AppCompatActivity {
             DialogFragment fragment = new DatePickerFragment();
 
             etDOB.setOnClickListener(view -> {
+                InputMethodManager imm = (InputMethodManager) etDOB.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(etDOB.getWindowToken(), 0);
                 fragment.show(getFragmentManager(), "DOB");
             });
         }
@@ -300,21 +306,6 @@ public class SignupActivity extends AppCompatActivity {
 
         public void startLoading(){
             ivAddProfileImage.setEnabled(true);
-            rbMale.setEnabled(true);
-            rbFemale.setEnabled(true);
-            etFullName.setEnabled(true);
-            etDOB.setEnabled(true);
-            etEmail.setEnabled(true);
-            etPhoneNumber.setEnabled(true);
-            etNewPassword.setEnabled(true);
-            etReNewPassword.setEnabled(true);
-            buttonSignup.setEnabled(true);
-            frameLayoutProgressBar.setVisibility(View.VISIBLE);
-            tvError.setVisibility(View.GONE);
-        }
-
-        public void stopLoading(){
-            ivAddProfileImage.setEnabled(false);
             rbMale.setEnabled(false);
             rbFemale.setEnabled(false);
             etFullName.setEnabled(false);
@@ -324,6 +315,21 @@ public class SignupActivity extends AppCompatActivity {
             etNewPassword.setEnabled(false);
             etReNewPassword.setEnabled(false);
             buttonSignup.setEnabled(false);
+            frameLayoutProgressBar.setVisibility(View.VISIBLE);
+            tvError.setVisibility(View.GONE);
+        }
+
+        public void stopLoading(){
+            ivAddProfileImage.setEnabled(true);
+            rbMale.setEnabled(true);
+            rbFemale.setEnabled(true);
+            etFullName.setEnabled(true);
+            etDOB.setEnabled(true);
+            etEmail.setEnabled(true);
+            etPhoneNumber.setEnabled(true);
+            etNewPassword.setEnabled(true);
+            etReNewPassword.setEnabled(true);
+            buttonSignup.setEnabled(true);
             frameLayoutProgressBar.setVisibility(View.GONE);
         }
     }

@@ -5,21 +5,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_events"
+            android:icon="@drawable/ic_event_512"
+            android:title="Events" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:icon="@drawable/ic_story_512"
+            android:title="Startup Stories" />
         <item
             android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:icon="@drawable/ic_chat_512"
+            android:title="Chat with Guide" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/ic_test_512"
+            android:title="Psychometric Test" />
+        <item
+            android:id="@+id/nav_manage1"
+            android:icon="@drawable/ic_videos_512"
+            android:title="Videos" />
+        <item
+            android:id="@+id/nav_manag2"
+            android:icon="@drawable/ic_bank_512"
+            android:title="Govt. funds for Startup" />
     </group>
 
     <item android:title="Communicate">
