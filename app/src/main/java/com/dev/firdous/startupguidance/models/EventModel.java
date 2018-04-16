@@ -11,7 +11,7 @@ import java.util.Date;
 public class EventModel implements Reviewable {
 
     private String eventId;
-    private String eventName;
+    private String eventTitle;
     private String description;
     private String photoLocation;
     private Date eventDate;
@@ -26,6 +26,7 @@ public class EventModel implements Reviewable {
     private String feedbackType;
 
     public EventModel() {
+        feedbackType = TYPE_EVENT;
     }
 
     public String getEventId() {
@@ -36,12 +37,12 @@ public class EventModel implements Reviewable {
         this.eventId = eventId;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getEventTitle() {
+        return eventTitle;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
     }
 
     public String getDescription() {
@@ -126,10 +127,5 @@ public class EventModel implements Reviewable {
 
     public String getFeedbackType() {
         return feedbackType;
-    }
-
-    @Override
-    public void setFeedbackType() {
-        feedbackType = TYPE_EVENT;
     }
 }

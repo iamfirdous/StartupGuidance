@@ -14,6 +14,7 @@ public class SuperUserModel extends UserModel implements Serializable, Reviewabl
     private String feedbackType;
 
     public SuperUserModel() {
+        feedbackType = TYPE_SUPER_USER;
     }
 
     public boolean isGivingGuidance() {
@@ -34,10 +35,5 @@ public class SuperUserModel extends UserModel implements Serializable, Reviewabl
 
     public String getFeedbackType() {
         return feedbackType;
-    }
-
-    @Override
-    public void setFeedbackType() {
-        feedbackType = TYPE_SUPER_USER;
     }
 }

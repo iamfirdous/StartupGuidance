@@ -19,6 +19,10 @@ public class StartupStoryModel implements Serializable, Reviewable {
 
     private String feedbackType;
 
+    public StartupStoryModel() {
+        feedbackType = TYPE_STARTUP_STORY;
+    }
+
     public String getStoryId() {
         return storyId;
     }
@@ -77,10 +81,5 @@ public class StartupStoryModel implements Serializable, Reviewable {
 
     public String getFeedbackType() {
         return feedbackType;
-    }
-
-    @Override
-    public void setFeedbackType() {
-        feedbackType = TYPE_STARTUP_STORY;
     }
 }

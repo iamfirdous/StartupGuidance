@@ -7,10 +7,7 @@ import java.io.Serializable;
  */
 
 public interface Reviewable extends Serializable {
-
     String TYPE_SUPER_USER = "SuperUser";
     String TYPE_EVENT = "Event";
     String TYPE_STARTUP_STORY = "StartupStory";
-
-    void setFeedbackType();
 }
