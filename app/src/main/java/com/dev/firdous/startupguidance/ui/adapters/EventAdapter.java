@@ -51,7 +51,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         EventModel event = events.get(position);
 
         int photoId = event.getMaxRegistrationCount();
-        String eventName = event.getEventName();
+        String eventName = event.getEventTitle();
         Date eventDate = event.getEventDate();
 
         Bitmap bmp;

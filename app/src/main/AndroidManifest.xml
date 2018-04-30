@@ -33,7 +33,7 @@
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".ui.activities.HomeActivity"
-            android:label="@string/title_activity_home"
+            android:label="Home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activities.ViewEventActivity"
