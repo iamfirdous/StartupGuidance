@@ -1,0 +1,55 @@
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        holder.buttonLoginGoogle.setOnClickListener(view -> {
+            startActivityForResult(googleSignInClient.getSignInIntent(), RC_SIGN_IN);
+        });
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                Log.e("AuthFailed1", "Google sign in failed");
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.e("AuthFailed2", "Google sign in failed");
+                signIn(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                Log.e("AuthFailed", "Google sign in failed : " + e.getMessage(), e);
+            }
+        }
+    }
+
+    private void signIn(GoogleSignInAccount account){
+
+            holder.startLoading();
+
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            auth.signInWithCredential(credential)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()){
+                            Toast.makeText(this, "Authentication successful", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(this, HomeActivity.class));
+                        }
+                        else {
+                            Log.e("AuthFailed", task.getException().toString());
+                            holder.showError("Authentication failed.");
+                        }
+                    });
+
+            holder.stopLoading();
+    }
+
