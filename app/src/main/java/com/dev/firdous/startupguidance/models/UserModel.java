@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by firdous on 18/3/18.
  */
 
-public class UserModel implements Serializable {
+public class UserModel implements Serializable, Reviewable {
 
     private String uid;
     private String fullName;
@@ -17,8 +17,17 @@ public class UserModel implements Serializable {
     private String gender;
     private String dateOfBirth;
     private String photoLocation;
+    private boolean isSuperUser = false;
+    private boolean isGivingGuidance;
+    private float ratingForGuidance;
+
+    private String feedbackType;
 
     public UserModel() {
+    }
+
+    public UserModel(boolean isSuperUser) {
+       setSuperUser(isSuperUser);
     }
 
     public String getUid() {
@@ -75,5 +84,36 @@ public class UserModel implements Serializable {
 
     public void setPhotoLocation(String photoLocation) {
         this.photoLocation = photoLocation;
+    }
+
+    public boolean isSuperUser() {
+        return isSuperUser;
+    }
+
+    public void setSuperUser(boolean superUser) {
+        isSuperUser = superUser;
+        feedbackType = isSuperUser ? TYPE_SUPER_USER : null;
+    }
+
+    public boolean isGivingGuidance() {
+        return isGivingGuidance;
+    }
+
+    public void setGivingGuidance(boolean givingGuidance) throws Exception {
+        if(!isSuperUser) {
+            throw new Exception("NormalUser cannot give guidance, only SuperUser can.");
+        }
+        isGivingGuidance = givingGuidance;
+    }
+
+    public float getRatingForGuidance() {
+        return ratingForGuidance;
+    }
+
+    public void setRatingForGuidance(float ratingForGuidance) throws Exception {
+        if(!isSuperUser) {
+            throw new Exception("NormalUser cannot give guidance, only SuperUser can.");
+        }
+        this.ratingForGuidance = ratingForGuidance;
     }
 }

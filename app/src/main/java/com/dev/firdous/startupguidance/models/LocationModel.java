@@ -5,27 +5,27 @@ package com.dev.firdous.startupguidance.models;
  */
 
 public class LocationModel {
-    private String address;
-    private String locality;
+    private String addressLine1;
+    private String addressLine2;
     private String city;
-    private String pinCode;
     private String state;
+    private String pinCode;
     private String landmark;
 
-    public String getAddress() {
-        return address;
+    public String getAddressLine1() {
+        return addressLine1;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
     }
 
-    public String getLocality() {
-        return locality;
+    public String getAddressLine2() {
+        return addressLine2;
     }
 
-    public void setLocality(String locality) {
-        this.locality = locality;
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
     }
 
     public String getCity() {

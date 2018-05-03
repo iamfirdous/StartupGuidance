@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,39 +18,80 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.dev.firdous.startupguidance.R;
+import com.dev.firdous.startupguidance.models.UserModel;
 import com.dev.firdous.startupguidance.ui.fragments.EventFragment;
+import com.dev.firdous.startupguidance.ui.fragments.StartupStoryFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseAuth auth;
+    private DatabaseReference reference;
     private FragmentManager manager;
+    private UserModel user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         auth = FirebaseAuth.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference("Users/" + auth.getUid());
+
         manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.content_main, new EventFragment()).commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user = dataSnapshot.getValue(UserModel.class);
+                if(user != null && user.isSuperUser()){
+                    fab.setVisibility(View.VISIBLE);
+                    Log.e("FAB", "FAB.VISIBLE");
+                }
+                else {
+                    fab.setVisibility(View.GONE);
+                    Log.e("FAB", "FAB.GONE");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        if (user != null)
+            Log.e("User", user.toString());
+
+        fab.setOnClickListener(view -> {
+            Intent addEventIntent = new Intent(this, AddEventActivity.class);
+            startActivity(addEventIntent);
+        });
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -100,9 +142,12 @@ public class HomeActivity extends AppCompatActivity
             case R.id.nav_events:
                 manager.beginTransaction().replace(R.id.content_main, new EventFragment()).commit();
                 break;
+            case R.id.nav_startup_stories:
+                manager.beginTransaction().replace(R.id.content_main, new StartupStoryFragment()).commit();
+                break;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

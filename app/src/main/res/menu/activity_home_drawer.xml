@@ -9,8 +9,8 @@
             android:icon="@drawable/ic_event_512"
             android:title="Events" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_story_512"
+            android:id="@+id/nav_startup_stories"
+            android:icon="@drawable/ic_story_black_512"
             android:title="Startup Stories" />
         <item
             android:id="@+id/nav_slideshow"

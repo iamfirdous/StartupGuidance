@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.AddEventActivity">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_saveEvent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editText_title_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawableLeft="@drawable/ic_title_24"
+                android:drawablePadding="16dp"
+                android:hint="Event title"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/editText_description_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawableLeft="@drawable/ic_description_24"
+                android:drawablePadding="16dp"
+                android:hint="Event description"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_title_addEvent" />
+
+            <ImageView
+                android:id="@+id/imageView_addImage_addEvent"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_description_addEvent"
+                android:src="@drawable/ic_add_image_512" />
+
+            <TextView
+                android:id="@+id/textView_addImageLabel_addEvent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginStart="64dp"
+                android:gravity="center"
+                android:text="Add image to your event"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView_addImage_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_date_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawableLeft="@drawable/ic_event_date_24"
+                android:drawablePadding="16dp"
+                android:hint="Event date"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textView_addImageLabel_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_addressLine1_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="Address line 1"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_date_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_addressLine2_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="Address line 2"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_addressLine1_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_city_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="City"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_addressLine2_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_state_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="State"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_city_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_pinCode_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="Pincode"
+                android:inputType="number"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_state_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_landmark_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="Landmark"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_pinCode_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_maxRegCount_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawablePadding="16dp"
+                android:hint="Maximum registration count"
+                android:inputType="number"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_landmark_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_regLastDate_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawableLeft="@drawable/ic_event_date_24"
+                android:drawablePadding="16dp"
+                android:hint="Event registration last date"
+                android:inputType="none"
+                android:focusable="false"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_maxRegCount_addEvent" />
+
+            <EditText
+                android:id="@+id/editText_regFee_addEvent"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button_gr"
+                android:drawableLeft="@drawable/ic_rupee_24"
+                android:drawablePadding="16dp"
+                android:hint="Registration fee"
+                android:inputType="number"
+                android:padding="8dp"
+                android:textColor="@color/colorTextWhite"
+                android:textColorHighlight="@color/colorTextHighlight"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editText_regLastDate_addEvent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_progressBar_addEvent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#7c000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar_addEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/button_saveEvent"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_button_botton_gr"
+        android:text="Create Event"
+        android:textAllCaps="false"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/textView_error_addEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f51616"
+        android:padding="4dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextWhite"
+        android:text="Error message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scrollView"
+        android:visibility="gone"/>
+
+</android.support.constraint.ConstraintLayout>

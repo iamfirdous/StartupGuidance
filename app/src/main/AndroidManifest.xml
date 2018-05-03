@@ -37,7 +37,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activities.ViewEventActivity"
-            android:theme="@style/AppTheme3"/>
+            android:theme="@style/AppTheme3" />
+        <activity
+            android:name=".ui.activities.ViewStartupStoryActivity"
+            android:theme="@style/AppTheme3" />
+        <activity
+            android:name=".ui.activities.AddEventActivity"
+            android:label="Create new event"/>
     </application>
 
 </manifest>
