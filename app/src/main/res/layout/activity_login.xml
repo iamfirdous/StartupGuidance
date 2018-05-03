@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_activity_gradient"
-    tools:context="com.dev.firdous.startupguidance.ui.activities.LoginActivity">
+    tools:context="com.dev.shehzadi.startupguidance.ui.activities.LoginActivity">
 
     <ScrollView
         android:id="@+id/scrollView"

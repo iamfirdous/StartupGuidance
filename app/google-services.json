@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:357864214325:android:2a1d759bbd5a7a78",
         "android_client_info": {
-          "package_name": "com.dev.firdous.startupguidance"
+          "package_name": "com.dev.shehzadi.startupguidance"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "357864214325-lo2ud6ve7mk57ep2ue2s4k2a10c6rjbc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.dev.firdous.startupguidance",
+            "package_name": "com.dev.shehzadi.startupguidance",
             "certificate_hash": "357dafb5b5b7bc1b20dbdd4e096104532c1d79b6"
           }
         },
