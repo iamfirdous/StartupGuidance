@@ -99,10 +99,7 @@ public class UserModel implements Serializable, Reviewable {
         return isGivingGuidance;
     }
 
-    public void setGivingGuidance(boolean givingGuidance) throws Exception {
-        if(!isSuperUser) {
-            throw new Exception("NormalUser cannot give guidance, only SuperUser can.");
-        }
+    public void setGivingGuidance(boolean givingGuidance) {
         isGivingGuidance = givingGuidance;
     }
 
@@ -110,10 +107,7 @@ public class UserModel implements Serializable, Reviewable {
         return ratingForGuidance;
     }
 
-    public void setRatingForGuidance(float ratingForGuidance) throws Exception {
-        if(!isSuperUser) {
-            throw new Exception("NormalUser cannot give guidance, only SuperUser can.");
-        }
+    public void setRatingForGuidance(float ratingForGuidance) {
         this.ratingForGuidance = ratingForGuidance;
     }
 }

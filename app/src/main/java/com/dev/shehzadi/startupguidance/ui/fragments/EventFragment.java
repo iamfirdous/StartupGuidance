@@ -1,6 +1,7 @@
 package com.dev.shehzadi.startupguidance.ui.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.EventModel;
+import com.dev.shehzadi.startupguidance.ui.activities.AddEventActivity;
+import com.dev.shehzadi.startupguidance.ui.activities.HomeActivity;
 import com.dev.shehzadi.startupguidance.ui.adapters.EventAdapter;
 
 import java.util.ArrayList;
@@ -38,6 +41,11 @@ public class EventFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_event, container, false);
 
         getActivity().setTitle("Upcoming events");
+
+        ((HomeActivity)getActivity()).getFAB().setOnClickListener(view -> {
+            Intent addEventIntent = new Intent(getActivity(), AddEventActivity.class);
+            startActivity(addEventIntent);
+        });
 
         recyclerView = view.findViewById(R.id.recyclerView_event);
         adapter = new EventAdapter(getContext(), getEvents());

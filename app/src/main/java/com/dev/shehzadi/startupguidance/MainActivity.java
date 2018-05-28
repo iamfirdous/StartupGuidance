@@ -21,19 +21,11 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST = 1122;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            checkPermissions();
-//        } else {
-//            startNextActivity();
-//        }
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user != null){
@@ -45,70 +37,5 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-    }
-
-    private void startNextActivity() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if(user != null){
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
-        }
-        else {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void checkPermissions() {
-        String[] ungrantedPermissions = requiredPermissionsStillNeeded();
-        if (ungrantedPermissions.length == 0) {
-            startNextActivity();
-        } else {
-            requestPermissions(ungrantedPermissions, PERMISSIONS_REQUEST);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == PERMISSIONS_REQUEST)
-            checkPermissions();
-    }
-
-    public String[] getRequiredPermissions() {
-        String[] permissions = null;
-        try {
-            permissions = getPackageManager().getPackageInfo(getPackageName(),
-                    PackageManager.GET_PERMISSIONS).requestedPermissions;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (permissions == null) {
-            return new String[0];
-        } else {
-            return permissions.clone();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private String[] requiredPermissionsStillNeeded() {
-
-        Set<String> permissions = new HashSet<String>();
-        for (String permission : getRequiredPermissions()) {
-            permissions.add(permission);
-        }
-        for (Iterator<String> i = permissions.iterator(); i.hasNext();) {
-            String permission = i.next();
-            if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-                Log.d(MainActivity.class.getSimpleName(),
-                        "Permission: " + permission + " already granted.");
-                i.remove();
-            } else {
-                Log.d(MainActivity.class.getSimpleName(),
-                        "Permission: " + permission + " not yet granted.");
-            }
-        }
-        return permissions.toArray(new String[permissions.size()]);
     }
 }

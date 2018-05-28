@@ -3,7 +3,6 @@ package com.dev.shehzadi.startupguidance.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -16,7 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.UserModel;
 import com.dev.shehzadi.startupguidance.ui.fragments.EventFragment;
@@ -27,12 +29,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private FloatingActionButton fab;
+    private View header;
+    private ImageView ivHeaderUserImage;
+    private TextView tvHeaderUsername, tvHeaderEmail;
+
     private FirebaseAuth auth;
     private DatabaseReference reference;
+
     private FragmentManager manager;
     private UserModel user;
 
@@ -49,19 +59,52 @@ public class HomeActivity extends AppCompatActivity
         manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.content_main, new EventFragment()).commit();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        header = navigationView.getHeaderView(0);
+        ivHeaderUserImage = header.findViewById(R.id.imageView_nav_header);
+        tvHeaderUsername = header.findViewById(R.id.textView_username_nav_header);
+        tvHeaderEmail = header.findViewById(R.id.textView_userEmail_nav_header);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(UserModel.class);
-                if(user != null && user.isSuperUser()){
-                    fab.setVisibility(View.VISIBLE);
-                    Log.e("FAB", "FAB.VISIBLE");
-                }
-                else {
-                    fab.setVisibility(View.GONE);
-                    Log.e("FAB", "FAB.GONE");
+
+                if (user != null) {
+                    tvHeaderUsername.setText(user.getFullName());
+                    tvHeaderEmail.setText(user.getEmailId());
+
+                    StorageReference ref = FirebaseStorage
+                                                .getInstance()
+                                                .getReference()
+                                                .child("ProfileImages/" + user.getUid());
+
+                    ref.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                Glide.with(HomeActivity.this)
+                                        .load(uri.toString())
+                                        .into(ivHeaderUserImage);
+                            });
+
+                    if(user.isSuperUser()){
+                        fab.setVisibility(View.VISIBLE);
+                        Log.e("FAB", "FAB.VISIBLE");
+                    }
+                    else {
+                        fab.setVisibility(View.GONE);
+                        Log.e("FAB", "FAB.GONE");
+                    }
                 }
             }
 
@@ -74,19 +117,10 @@ public class HomeActivity extends AppCompatActivity
         if (user != null)
             Log.e("User", user.toString());
 
-        fab.setOnClickListener(view -> {
-            Intent addEventIntent = new Intent(this, AddEventActivity.class);
-            startActivity(addEventIntent);
-        });
+    }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+    public FloatingActionButton getFAB() {
+        return fab;
     }
 
     @Override

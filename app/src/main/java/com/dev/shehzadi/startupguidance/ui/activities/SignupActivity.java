@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -64,6 +65,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private Uri filePath;
     private final int PICK_IMAGE_REQUEST = 71;
+    private final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 456;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +105,42 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         holder.ivAddProfileImage.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        READ_EXTERNAL_STORAGE_REQUEST_CODE);
+
+            }
+            else pickImage();
         });
 
+    }
+
+    private void pickImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case READ_EXTERNAL_STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pickImage();
+                } else {
+                    Toast.makeText(this, "Read permission was denied.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "You'll not be able to upload any image to your profile, " +
+                                                      "until you grant the read storage permission", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
     }
 
     @Override
@@ -173,6 +205,28 @@ public class SignupActivity extends AppCompatActivity {
 
     private void uploadDetails() {
         if(user != null){
+
+            if(filePath != null){
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Uploading your profile image...");
+                progressDialog.show();
+
+                StorageReference ref = FirebaseStorage.getInstance().getReference().child("ProfileImages/"+ user.getUid());
+                ref.putFile(filePath)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            Toast.makeText(this, "Profile image uploaded", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            progressDialog.dismiss();
+                            Toast.makeText(this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnProgressListener(taskSnapshot -> {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        });
+            }
+
             DatabaseReference reference = FirebaseDatabase.getInstance()
                     .getReference("Users/" + user.getUid());
 
@@ -187,29 +241,6 @@ public class SignupActivity extends AppCompatActivity {
 
                 }
             });
-
-
-//            if(filePath != null){
-//                final ProgressDialog progressDialog = new ProgressDialog(this);
-//                progressDialog.setTitle("Uploading your profile image...");
-//                progressDialog.show();
-//
-//                StorageReference ref = FirebaseStorage.getInstance().getReference().child("ProfileImages/"+ userModel.getUid());
-//                ref.putFile(filePath)
-//                        .addOnSuccessListener(taskSnapshot -> {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(this, "Profile image uploaded", Toast.LENGTH_SHORT).show();
-//                        })
-//                        .addOnFailureListener(e -> {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        })
-//                        .addOnProgressListener(taskSnapshot -> {
-//                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-//                                    .getTotalByteCount());
-//                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
-//                        });
-//            }
         }
     }
 
