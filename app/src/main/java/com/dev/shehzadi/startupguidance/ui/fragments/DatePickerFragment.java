@@ -17,9 +17,18 @@ import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    private EditText etDOB;
+    private EditText editText;
 
     private int day, month, year;
+
+    public EditText getEditText() {
+        return editText;
+    }
+
+    public void setEditText(EditText editText) {
+        this.editText = editText;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
@@ -34,14 +43,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
 
-        String tag = getTag();
-
-        etDOB = getActivity().findViewById(R.id.editText_dob_signup);
-
         this.day = view.getDayOfMonth();
         this.month = view.getMonth();
         this.year = view.getYear();
 
-        etDOB.setText(this.day+"-"+(this.month+1)+"-"+this.year);
+        editText.setText(this.day+"-"+(this.month+1)+"-"+this.year);
     }
 }

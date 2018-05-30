@@ -52,7 +52,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         int photoId = event.getMaxRegistrationCount();
         String eventName = event.getEventTitle();
-        Date eventDate = event.getEventDate();
+        String eventDate = event.getEventDate();
 
         Bitmap bmp;
         if(photoId != 0)
@@ -68,8 +68,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         else
             holder.tvEventName.setText("-");
 
-        if (eventDate != null)
-            holder.tvEventDate.setText(eventDate.toString());
+        if (!TextUtils.isEmpty(eventDate))
+            holder.tvEventDate.setText(eventDate);
         else
             holder.tvEventDate.setText("-");
 

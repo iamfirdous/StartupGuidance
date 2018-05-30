@@ -14,12 +14,12 @@ public class EventModel implements Reviewable {
     private String eventTitle;
     private String description;
     private String photoLocation;
-    private Date eventDate;
+    private String eventDate;
     private LocationModel location;
     private int maxRegistrationCount;
     private int totalRegistrationCount;
-    private Date registrationLastDate;
-    private BigDecimal registrationFee = BigDecimal.valueOf(0);
+    private String registrationLastDate;
+    private long registrationFee;
     private ArrayList<String> registeredMemberUid;
     private String eventOrganizerUid;
 
@@ -61,11 +61,11 @@ public class EventModel implements Reviewable {
         this.photoLocation = photoLocation;
     }
 
-    public Date getEventDate() {
+    public String getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(Date eventDate) {
+    public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
 
@@ -93,19 +93,19 @@ public class EventModel implements Reviewable {
         this.totalRegistrationCount = totalRegistrationCount;
     }
 
-    public Date getRegistrationLastDate() {
+    public String getRegistrationLastDate() {
         return registrationLastDate;
     }
 
-    public void setRegistrationLastDate(Date registrationLastDate) {
+    public void setRegistrationLastDate(String registrationLastDate) {
         this.registrationLastDate = registrationLastDate;
     }
 
-    public BigDecimal getRegistrationFee() {
+    public long getRegistrationFee() {
         return registrationFee;
     }
 
-    public void setRegistrationFee(BigDecimal registrationFee) {
+    public void setRegistrationFee(long registrationFee) {
         this.registrationFee = registrationFee;
     }
 

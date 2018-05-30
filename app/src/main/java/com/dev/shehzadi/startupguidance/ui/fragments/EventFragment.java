@@ -67,27 +67,27 @@ public class EventFragment extends Fragment {
         EventModel eventModel1 = new EventModel();
         eventModel1.setMaxRegistrationCount(R.drawable.business_meet);
         eventModel1.setEventTitle("Business Meet");
-        eventModel1.setEventDate(new Date(2018, 4, 16));
+        eventModel1.setEventDate(new Date(2018, 4, 16).toString());
 
         EventModel eventModel2 = new EventModel();
         eventModel2.setMaxRegistrationCount(R.drawable.skill_development);
         eventModel2.setEventTitle("Skill Development Meet");
-        eventModel2.setEventDate(new Date(2018, 4, 16));
+        eventModel2.setEventDate(new Date(2018, 4, 16).toString());
 
         EventModel eventModel3 = new EventModel();
         eventModel3.setMaxRegistrationCount(R.drawable.webdevfinal);
         eventModel3.setEventTitle("Web Development workshop");
-        eventModel3.setEventDate(new Date(2018, 4, 16));
+        eventModel3.setEventDate(new Date(2018, 4, 16).toString());
 
         EventModel eventModel4 = new EventModel();
         eventModel4.setMaxRegistrationCount(R.drawable.skill_development);
         eventModel4.setEventTitle("Skill Development Meet");
-        eventModel4.setEventDate(new Date(2018, 4, 16));
+        eventModel4.setEventDate(new Date(2018, 4, 16).toString());
 
         EventModel eventModel5 = new EventModel();
         eventModel5.setMaxRegistrationCount(R.drawable.business_meet);
         eventModel5.setEventTitle("Business Meet");
-        eventModel5.setEventDate(new Date(2018, 4, 16));
+        eventModel5.setEventDate(new Date(2018, 4, 16).toString());
 
         events.add(eventModel1);
         events.add(eventModel2);

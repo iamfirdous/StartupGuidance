@@ -85,17 +85,18 @@ public class HomeActivity extends AppCompatActivity
                     tvHeaderUsername.setText(user.getFullName());
                     tvHeaderEmail.setText(user.getEmailId());
 
-                    StorageReference ref = FirebaseStorage
-                                                .getInstance()
-                                                .getReference()
-                                                .child("ProfileImages/" + user.getUid());
+                    String photo = user.getPhotoLocation();
 
-                    ref.getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                Glide.with(HomeActivity.this)
-                                        .load(uri.toString())
-                                        .into(ivHeaderUserImage);
-                            });
+                    if(photo != null && !photo.trim().equals("")){
+                        Glide.with(HomeActivity.this)
+                                .load(photo)
+                                .into(ivHeaderUserImage);
+                    }
+                    else {
+                        ivHeaderUserImage.setOnClickListener(view -> {
+
+                        });
+                    }
 
                     if(user.isSuperUser()){
                         fab.setVisibility(View.VISIBLE);

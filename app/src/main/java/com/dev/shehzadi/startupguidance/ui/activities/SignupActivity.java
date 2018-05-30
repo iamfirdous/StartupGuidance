@@ -1,7 +1,6 @@
 package com.dev.shehzadi.startupguidance.ui.activities;
 
 import android.Manifest;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,11 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -52,6 +48,8 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.dev.shehzadi.startupguidance.utils.Util.HYPHENATED_PATTERN;
+import static com.dev.shehzadi.startupguidance.utils.Util.getFormattedDate;
 import static com.dev.shehzadi.startupguidance.utils.Util.isValidEmail;
 
 public class SignupActivity extends AppCompatActivity {
@@ -76,22 +74,12 @@ public class SignupActivity extends AppCompatActivity {
         holder = new SignupViewHolder();
         user = new UserModel();
 
-        DateTimeFormatter dtf = DateTimeFormat.forPattern("dd-MM-yyyy");
-
         holder.buttonSignup.setOnClickListener(view -> {
             user.setFullName(holder.etFullName.getText().toString().trim());
             user.setGender(holder.rbMale.isChecked() ? "Male" : "Female");
             date = holder.etDOB.getText().toString().trim();
             if(!TextUtils.isEmpty(date)){
-                LocalDate localDate = dtf.parseLocalDate(date);
-                String d = "" + localDate.getDayOfMonth();
-                d = (d.length() == 1) ? "0" + d : d;
-
-                String m = "" + localDate.getMonthOfYear();
-                m = (m.length() == 1) ? "0" + m : m;
-
-                String y = "" + localDate.getYear();
-                user.setDateOfBirth(d +  m + y);
+                user.setDateOfBirth(getFormattedDate(date, HYPHENATED_PATTERN));
             }
             user.setEmailId(holder.etEmail.getText().toString().trim());
             user.setPhoneNo(holder.etPhoneNumber.getText().toString().trim());
@@ -177,6 +165,7 @@ public class SignupActivity extends AppCompatActivity {
                                     if(task1.isSuccessful()){
                                         user.setUid(firebaseUser.getUid());
                                         auth.signOut();
+                                        uploadPhoto();
                                         uploadDetails();
                                         Intent loginIntent = new Intent(this, LoginActivity.class);
                                         loginIntent.putExtra("accJustCreated", "accJustCreated");
@@ -203,18 +192,20 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
-    private void uploadDetails() {
+    private void uploadPhoto() {
         if(user != null){
-
             if(filePath != null){
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Uploading your profile image...");
                 progressDialog.show();
 
                 StorageReference ref = FirebaseStorage.getInstance().getReference().child("ProfileImages/"+ user.getUid());
+
                 ref.putFile(filePath)
                         .addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(this, "Profile image uploaded", Toast.LENGTH_SHORT).show();
+                            user.setPhotoLocation(taskSnapshot.getDownloadUrl().toString());
+                            uploadDetails();
                         })
                         .addOnFailureListener(e -> {
                             progressDialog.dismiss();
@@ -226,7 +217,11 @@ public class SignupActivity extends AppCompatActivity {
                             progressDialog.setMessage("Uploaded "+(int)progress+"%");
                         });
             }
+        }
+    }
 
+    private void uploadDetails(){
+        if(user != null){
             DatabaseReference reference = FirebaseDatabase.getInstance()
                     .getReference("Users/" + user.getUid());
 
@@ -321,7 +316,8 @@ public class SignupActivity extends AppCompatActivity {
             frameLayoutProgressBar = findViewById(R.id.frameLayout_progressBar_signup);
             tvError = findViewById(R.id.textView_error_signup);
 
-            DialogFragment fragment = new DatePickerFragment();
+            DatePickerFragment fragment = new DatePickerFragment();
+            fragment.setEditText(etDOB);
 
             etDOB.setOnClickListener(view -> {
                 InputMethodManager imm = (InputMethodManager) etDOB.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
