@@ -6,15 +6,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.EventModel;
 import com.dev.shehzadi.startupguidance.ui.activities.AddEventActivity;
 import com.dev.shehzadi.startupguidance.ui.activities.HomeActivity;
 import com.dev.shehzadi.startupguidance.ui.adapters.EventAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,9 +37,12 @@ public class EventFragment extends Fragment {
     }
 
     private View view;
+    private FrameLayout frameLayoutProgressBar;
     private RecyclerView recyclerView;
     private EventAdapter adapter;
     private List<EventModel> events;
+
+    private boolean loaded = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,8 +57,8 @@ public class EventFragment extends Fragment {
             startActivity(addEventIntent);
         });
 
+        frameLayoutProgressBar = view.findViewById(R.id.frameLayout_progressBar_event);
         recyclerView = view.findViewById(R.id.recyclerView_event);
-        adapter = new EventAdapter(getContext(), getEvents());
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -56,46 +66,38 @@ public class EventFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
+        events = new ArrayList<>();
+        adapter = new EventAdapter(getContext(), events);
+
         recyclerView.setAdapter(adapter);
+
+        initView();
 
         return view;
     }
 
-    public List<EventModel> getEvents(){
-        events = new ArrayList<>();
+    public void initView(){
+        DatabaseReference eventsReference = FirebaseDatabase.getInstance().getReference("Events");
 
-        EventModel eventModel1 = new EventModel();
-        eventModel1.setMaxRegistrationCount(R.drawable.business_meet);
-        eventModel1.setEventTitle("Business Meet");
-        eventModel1.setEventDate(new Date(2018, 4, 16).toString());
+        eventsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!loaded)
+                    frameLayoutProgressBar.setVisibility(View.VISIBLE);
+                events.clear();
+                for (DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+                    events.add(eventSnapshot.getValue(EventModel.class));
+                }
+                adapter.notifyDataSetChanged();
+                frameLayoutProgressBar.setVisibility(View.GONE);
+                loaded = true;
+            }
 
-        EventModel eventModel2 = new EventModel();
-        eventModel2.setMaxRegistrationCount(R.drawable.skill_development);
-        eventModel2.setEventTitle("Skill Development Meet");
-        eventModel2.setEventDate(new Date(2018, 4, 16).toString());
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        EventModel eventModel3 = new EventModel();
-        eventModel3.setMaxRegistrationCount(R.drawable.webdevfinal);
-        eventModel3.setEventTitle("Web Development workshop");
-        eventModel3.setEventDate(new Date(2018, 4, 16).toString());
-
-        EventModel eventModel4 = new EventModel();
-        eventModel4.setMaxRegistrationCount(R.drawable.skill_development);
-        eventModel4.setEventTitle("Skill Development Meet");
-        eventModel4.setEventDate(new Date(2018, 4, 16).toString());
-
-        EventModel eventModel5 = new EventModel();
-        eventModel5.setMaxRegistrationCount(R.drawable.business_meet);
-        eventModel5.setEventTitle("Business Meet");
-        eventModel5.setEventDate(new Date(2018, 4, 16).toString());
-
-        events.add(eventModel1);
-        events.add(eventModel2);
-        events.add(eventModel3);
-        events.add(eventModel4);
-        events.add(eventModel5);
-
-        return events;
+            }
+        });
     }
 
 }

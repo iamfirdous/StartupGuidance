@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.StartupStoryFragment">
 
     <android.support.v7.widget.RecyclerView
@@ -11,5 +12,24 @@
         android:layout_height="match_parent"
         android:padding="6dp"
         android:clipToPadding="false"/>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_progressBar_startupStory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#7c000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:id="@+id/progressBar_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
 
 </FrameLayout>

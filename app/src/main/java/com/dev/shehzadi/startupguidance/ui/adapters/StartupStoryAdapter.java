@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.StartupStoryModel;
 import com.dev.shehzadi.startupguidance.ui.activities.ViewStartupStoryActivity;
@@ -28,8 +29,6 @@ public class StartupStoryAdapter extends RecyclerView.Adapter<StartupStoryAdapte
     public StartupStoryAdapter(Context context, List<StartupStoryModel> startupStories) {
         this.startupStories = startupStories;
         this.context = context;
-
-        Log.e("EventsCount", "" + startupStories.size());
     }
 
     @NonNull
@@ -45,18 +44,19 @@ public class StartupStoryAdapter extends RecyclerView.Adapter<StartupStoryAdapte
 
         StartupStoryModel startupStory = startupStories.get(position);
 
-        String storyId = startupStory.getStoryId();
+        String photoLocation = startupStory.getPhotoLocation();
         String storyTitle = startupStory.getStoryTitle();
         String authorName = startupStory.getAuthorName();
 
-//        Bitmap bmp;
-//        if(photoId != 0)
-//            bmp = ((BitmapDrawable) context.getResources().getDrawable(photoId)).getBitmap();
-////            bmp = BitmapFactory.decodeByteArray(photoId, 0, photoId.length);
-//        else
-//            bmp = ((BitmapDrawable) context.getResources().getDrawable(photoId)).getBitmap();
-
-//        holder.ivStartupStoryImg.setImageBitmap(bmp);
+        if(!TextUtils.isEmpty(photoLocation)){
+            Glide.with(context)
+                    .load(photoLocation)
+                    .into(holder.ivStartupStoryImg);
+        }
+        else{
+            Bitmap bmp = ((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_story_black_512)).getBitmap();
+            holder.ivStartupStoryImg.setImageBitmap(bmp);
+        }
 
         if (!TextUtils.isEmpty(storyTitle))
             holder.tvTitle.setText(storyTitle);
@@ -70,7 +70,7 @@ public class StartupStoryAdapter extends RecyclerView.Adapter<StartupStoryAdapte
 
         holder.itemView.setOnClickListener(view -> {
             Intent viewStartupStory = new Intent(context, ViewStartupStoryActivity.class);
-//            viewStartupStory.putExtra("product", product);
+            viewStartupStory.putExtra("startupStory", startupStory);
             context.startActivity(viewStartupStory);
         });
 

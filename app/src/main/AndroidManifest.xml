@@ -43,7 +43,10 @@
             android:theme="@style/AppTheme3" />
         <activity
             android:name=".ui.activities.AddEventActivity"
-            android:label="Create new event"/>
+            android:label="Create new event" />
+        <activity
+            android:name=".ui.activities.AddStartupStoryActivity"
+            android:label="Create new startup story" />
     </application>
 
 </manifest>

@@ -14,12 +14,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.EventModel;
+import com.dev.shehzadi.startupguidance.ui.activities.HomeActivity;
 import com.dev.shehzadi.startupguidance.ui.activities.ViewEventActivity;
 
 import java.util.Date;
 import java.util.List;
+
+import static com.dev.shehzadi.startupguidance.utils.Util.NON_HYPHENATED_PATTERN;
+import static com.dev.shehzadi.startupguidance.utils.Util.getFormattedDate;
 
 /**
  * Created by shehzadi on 3/27/2018.
@@ -50,18 +55,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         EventModel event = events.get(position);
 
-        int photoId = event.getMaxRegistrationCount();
+        String photoLocation = event.getPhotoLocation();
         String eventName = event.getEventTitle();
-        String eventDate = event.getEventDate();
+        String eventDate = getFormattedDate(event.getEventDate(), NON_HYPHENATED_PATTERN);
 
-        Bitmap bmp;
-        if(photoId != 0)
-            bmp = ((BitmapDrawable) context.getResources().getDrawable(photoId)).getBitmap();
-//            bmp = BitmapFactory.decodeByteArray(photoId, 0, photoId.length);
-        else
-            bmp = ((BitmapDrawable) context.getResources().getDrawable(photoId)).getBitmap();
+        if(!TextUtils.isEmpty(photoLocation)){
+            Glide.with(context)
+                    .load(photoLocation)
+                    .into(holder.ivEventBanner);
+        }
+        else{
+            Bitmap bmp = ((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_event_512)).getBitmap();
+            holder.ivEventBanner.setImageBitmap(bmp);
+        }
 
-        holder.ivEventBanner.setImageBitmap(bmp);
 
         if (!TextUtils.isEmpty(eventName))
             holder.tvEventName.setText(eventName);
@@ -75,7 +82,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         holder.itemView.setOnClickListener(view -> {
             Intent viewEvent = new Intent(context, ViewEventActivity.class);
-//            viewEvent.putExtra("product", product);
+            viewEvent.putExtra("event", event);
             context.startActivity(viewEvent);
         });
 

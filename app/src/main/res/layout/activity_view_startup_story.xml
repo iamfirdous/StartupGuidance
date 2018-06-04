@@ -28,7 +28,7 @@
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 android:contentDescription="@string/app_name"
                 android:minHeight="100dp" />

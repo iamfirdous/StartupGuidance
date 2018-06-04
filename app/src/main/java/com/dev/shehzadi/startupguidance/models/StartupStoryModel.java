@@ -1,7 +1,6 @@
 package com.dev.shehzadi.startupguidance.models;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by shehzadi on 18/3/18.
@@ -14,7 +13,8 @@ public class StartupStoryModel implements Serializable, Reviewable {
     private String description;
     private String authorName;
     private String story;
-    private Date postedOn;
+    private String photoLocation;
+    private String postedOn;
     private String postedByUid;
 
     private String feedbackType;
@@ -63,11 +63,19 @@ public class StartupStoryModel implements Serializable, Reviewable {
         this.story = story;
     }
 
-    public Date getPostedOn() {
+    public String getPhotoLocation() {
+        return photoLocation;
+    }
+
+    public void setPhotoLocation(String photoLocation) {
+        this.photoLocation = photoLocation;
+    }
+
+    public String getPostedOn() {
         return postedOn;
     }
 
-    public void setPostedOn(Date postedOn) {
+    public void setPostedOn(String postedOn) {
         this.postedOn = postedOn;
     }
 

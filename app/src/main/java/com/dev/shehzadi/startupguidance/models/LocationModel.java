@@ -1,10 +1,12 @@
 package com.dev.shehzadi.startupguidance.models;
 
+import java.io.Serializable;
+
 /**
  * Created by shehzadi on 18/3/18.
  */
 
-public class LocationModel {
+public class LocationModel implements Serializable {
     private String addressLine1;
     private String addressLine2;
     private String city;

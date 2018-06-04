@@ -26,12 +26,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.EventModel;
 import com.dev.shehzadi.startupguidance.models.LocationModel;
-import com.dev.shehzadi.startupguidance.models.UserModel;
 import com.dev.shehzadi.startupguidance.ui.fragments.DatePickerFragment;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,10 +41,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import static com.dev.shehzadi.startupguidance.utils.Util.HYPHENATED_PATTERN;
+import static com.dev.shehzadi.startupguidance.utils.Util.NON_HYPHENATED_PATTERN;
+import static com.dev.shehzadi.startupguidance.utils.Util.getFileExtensionFromUri;
 import static com.dev.shehzadi.startupguidance.utils.Util.getFormattedDate;
+import static com.dev.shehzadi.startupguidance.utils.Util.getTimeStampForPhotos;
 
 public class AddEventActivity extends AppCompatActivity {
 
@@ -56,7 +57,8 @@ public class AddEventActivity extends AppCompatActivity {
     private LocationModel location;
     private String eventDate, regLastDate;
 
-    private Uri filePath;
+    private Uri fileUri;
+    private String fileExtension;
     private final int PICK_IMAGE_REQUEST = 72;
     private final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 457;
 
@@ -72,6 +74,11 @@ public class AddEventActivity extends AppCompatActivity {
         event = new EventModel();
         location = new LocationModel();
         event.setEventOrganizerUid(FirebaseAuth.getInstance().getUid());
+
+        EventModel eventToEdit = (EventModel) getIntent().getSerializableExtra("event");
+        if (eventToEdit != null) {
+            setEventToEdit(eventToEdit);
+        }
 
         holder.buttonSaveEvent.setOnClickListener(view -> {
             event.setEventTitle(holder.etEventTitle.getText().toString().trim());
@@ -122,10 +129,45 @@ public class AddEventActivity extends AppCompatActivity {
         });
     }
 
+    private void setEventToEdit(EventModel eventToEdit) {
+        holder.etEventTitle.setText((TextUtils.isEmpty(eventToEdit.getEventTitle())) ? "" : eventToEdit.getEventTitle());
+        holder.etEventDescription.setText((TextUtils.isEmpty(eventToEdit.getDescription())) ? "" : eventToEdit.getDescription());
+        holder.etDate.setText((TextUtils.isEmpty(eventToEdit.getEventDate())) ? "" : getFormattedDate(eventToEdit.getEventDate(), NON_HYPHENATED_PATTERN));
+
+        holder.etAddressLine1.setText((TextUtils.isEmpty(eventToEdit.getLocation().getAddressLine1())) ? "" : eventToEdit.getLocation().getAddressLine1());
+        holder.etAddressLine2.setText((TextUtils.isEmpty(eventToEdit.getLocation().getAddressLine2())) ? "" : eventToEdit.getLocation().getAddressLine2());
+        holder.etCity.setText((TextUtils.isEmpty(eventToEdit.getLocation().getCity())) ? "" : eventToEdit.getLocation().getCity());
+        holder.etState.setText((TextUtils.isEmpty(eventToEdit.getLocation().getState())) ? "" : eventToEdit.getLocation().getState());
+        holder.etPinCode.setText((TextUtils.isEmpty(eventToEdit.getLocation().getPinCode())) ? "" : eventToEdit.getLocation().getPinCode());
+        holder.etLandmark.setText((TextUtils.isEmpty(eventToEdit.getLocation().getLandmark())) ? "" : eventToEdit.getLocation().getLandmark());
+
+        holder.etMaxRegCount.setText((TextUtils.isEmpty(eventToEdit.getMaxRegistrationCount() + "")) ? "" : eventToEdit.getMaxRegistrationCount() + "");
+        holder.etRegLastDate.setText((TextUtils.isEmpty(eventToEdit.getRegistrationLastDate())) ? "" : getFormattedDate(eventToEdit.getRegistrationLastDate(), NON_HYPHENATED_PATTERN));
+        holder.etRegFee.setText((TextUtils.isEmpty(eventToEdit.getRegistrationFee() + "")) ? "" : eventToEdit.getRegistrationFee() + "");
+
+        if (!TextUtils.isEmpty(eventToEdit.getPhotoLocation())) {
+            Glide.with(this)
+                    .load(eventToEdit.getPhotoLocation())
+                    .into(holder.ivAddEventImage);
+            event.setPhotoLocation(eventToEdit.getPhotoLocation());
+        }
+
+        event.setEventId(eventToEdit.getEventId());
+
+        holder.buttonSaveEvent.setText("Save Event");
+    }
+
     private void saveEvent() {
         holder.startLoading();
-        eventReference = FirebaseDatabase.getInstance().getReference("Events").push();
-        event.setEventId(eventReference.getKey());
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Events");
+
+        if (TextUtils.isEmpty(event.getEventId())) {
+            eventReference = ref.push();
+            event.setEventId(eventReference.getKey());
+        } else {
+            eventReference = ref.child(event.getEventId());
+        }
 
         eventReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -146,14 +188,21 @@ public class AddEventActivity extends AppCompatActivity {
 
     private void uploadEventPhoto() {
         if(event != null){
-            if(filePath != null){
+            if(fileUri != null){
+                holder.startLoading();
                 final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setCancelable(false);
                 progressDialog.setTitle("Uploading your event photo...");
                 progressDialog.show();
 
-                StorageReference ref = FirebaseStorage.getInstance().getReference().child("EventPhotos/"+ event.getEventId());
+                StorageReference ref = FirebaseStorage
+                                            .getInstance()
+                                            .getReference()
+                                            .child("EventPhotos/event-photo-"
+                                                    + getTimeStampForPhotos()
+                                                    + fileExtension);
 
-                ref.putFile(filePath)
+                ref.putFile(fileUri)
                         .addOnSuccessListener(taskSnapshot -> {
                             Toast.makeText(this, "Event photos uploaded", Toast.LENGTH_SHORT).show();
                             event.setPhotoLocation(taskSnapshot.getDownloadUrl().toString());
@@ -258,9 +307,11 @@ public class AddEventActivity extends AppCompatActivity {
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null )
         {
-            filePath = data.getData();
+            fileUri = data.getData();
+            fileExtension = getFileExtensionFromUri(this, fileUri);
+            Log.e("Extension", fileExtension);
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fileUri);
                 holder.ivAddEventImage.setImageBitmap(bitmap);
             }
             catch (IOException e)

@@ -1,6 +1,7 @@
 package com.dev.shehzadi.startupguidance.ui.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,10 +9,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.dev.shehzadi.startupguidance.R;
+import com.dev.shehzadi.startupguidance.models.EventModel;
 import com.dev.shehzadi.startupguidance.models.StartupStoryModel;
+import com.dev.shehzadi.startupguidance.ui.activities.AddEventActivity;
+import com.dev.shehzadi.startupguidance.ui.activities.AddStartupStoryActivity;
+import com.dev.shehzadi.startupguidance.ui.activities.HomeActivity;
 import com.dev.shehzadi.startupguidance.ui.adapters.StartupStoryAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +38,13 @@ public class StartupStoryFragment extends Fragment {
     }
 
     private View view;
+    private FrameLayout frameLayoutProgressBar;
     private RecyclerView recyclerView;
+
     private StartupStoryAdapter adapter;
     private List<StartupStoryModel> startupStories;
+
+    private boolean loaded = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,8 +54,13 @@ public class StartupStoryFragment extends Fragment {
 
         getActivity().setTitle("Startup stories");
 
+        ((HomeActivity)getActivity()).getFAB().setOnClickListener(view -> {
+            Intent addStartupStoryIntent = new Intent(getActivity(), AddStartupStoryActivity.class);
+            startActivity(addStartupStoryIntent);
+        });
+
+        frameLayoutProgressBar = view.findViewById(R.id.frameLayout_progressBar_startupStory);
         recyclerView = view.findViewById(R.id.recyclerView_startup_stories);
-        adapter = new StartupStoryAdapter(getContext(), getStartupStories());
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -48,41 +68,38 @@ public class StartupStoryFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
+        startupStories = new ArrayList<>();
+        adapter = new StartupStoryAdapter(getContext(), startupStories);
+
         recyclerView.setAdapter(adapter);
+
+        initView();
 
         return view;
     }
 
-    public List<StartupStoryModel> getStartupStories(){
-        startupStories = new ArrayList<>();
+    public void initView(){
+        DatabaseReference eventsReference = FirebaseDatabase.getInstance().getReference("StartupStories");
 
-        StartupStoryModel startupStoryModel1 = new StartupStoryModel();
-        startupStoryModel1.setStoryTitle("The billion dollar Mu Sigma story");
-        startupStoryModel1.setAuthorName("Team YourStory");
+        eventsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!loaded)
+                    frameLayoutProgressBar.setVisibility(View.VISIBLE);
+                startupStories.clear();
+                for (DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
+                    startupStories.add(eventSnapshot.getValue(StartupStoryModel.class));
+                }
+                adapter.notifyDataSetChanged();
+                frameLayoutProgressBar.setVisibility(View.GONE);
+                loaded = true;
+            }
 
-        StartupStoryModel startupStoryModel2 = new StartupStoryModel();
-        startupStoryModel2.setStoryTitle("Rotimatic: Rotis at a click of a button");
-        startupStoryModel2.setAuthorName("Jubin Mehta");
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        StartupStoryModel startupStoryModel4 = new StartupStoryModel();
-        startupStoryModel4.setStoryTitle("Meet Oravel's 19-year-old founder Ritesh Agarwal");
-        startupStoryModel4.setAuthorName("Jubin Mehta");
-
-        StartupStoryModel startupStoryModel5 = new StartupStoryModel();
-        startupStoryModel5.setStoryTitle("Conned by a travel agent, Rikant Pitti co-founded a multi crore empire - EaseMyTrip story");
-        startupStoryModel5.setAuthorName("Aditya Bhushan Dwivedi");
-
-        StartupStoryModel startupStoryModel3 = new StartupStoryModel();
-        startupStoryModel3.setStoryTitle("Shared cab service Cubito launches in Bangalore");
-        startupStoryModel3.setAuthorName("Jubin Mehta");
-
-        startupStories.add(startupStoryModel1);
-        startupStories.add(startupStoryModel2);
-        startupStories.add(startupStoryModel3);
-        startupStories.add(startupStoryModel4);
-        startupStories.add(startupStoryModel5);
-
-        return startupStories;
+            }
+        });
     }
 
 }
