@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.StartupStoryModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,11 +38,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 
-import static com.dev.shehzadi.startupguidance.utils.Util.HYPHENATED_PATTERN;
 import static com.dev.shehzadi.startupguidance.utils.Util.getCurrentDate;
 import static com.dev.shehzadi.startupguidance.utils.Util.getFileExtensionFromUri;
-import static com.dev.shehzadi.startupguidance.utils.Util.getFormattedDate;
-import static com.dev.shehzadi.startupguidance.utils.Util.getTimeStampForPhotos;
+import static com.dev.shehzadi.startupguidance.utils.Util.getTimeStamp;
 
 public class AddStartupStoryActivity extends AppCompatActivity {
 
@@ -66,6 +65,11 @@ public class AddStartupStoryActivity extends AppCompatActivity {
         holder = new AddStartupStoryViewHolder();
         startupStory = new StartupStoryModel();
         startupStory.setPostedByUid(FirebaseAuth.getInstance().getUid());
+
+        StartupStoryModel startupStoryToEdit = (StartupStoryModel) getIntent().getSerializableExtra("startupStory");
+        if (startupStoryToEdit != null) {
+            setStartupStoryToEdit(startupStoryToEdit);
+        }
 
         holder.buttonSaveStartupStory.setOnClickListener(view -> {
             startupStory.setStoryTitle(holder.etStartupStoryTitle.getText().toString().trim());
@@ -92,18 +96,45 @@ public class AddStartupStoryActivity extends AppCompatActivity {
         });
     }
 
+    private void setStartupStoryToEdit(StartupStoryModel startupStoryToEdit) {
+        holder.etStartupStoryTitle.setText((TextUtils.isEmpty(startupStoryToEdit.getStoryTitle())) ? "" : startupStoryToEdit.getStoryTitle());
+        holder.etDescription.setText((TextUtils.isEmpty(startupStoryToEdit.getDescription())) ? "" : startupStoryToEdit.getDescription());
+        holder.etAuthor.setText((TextUtils.isEmpty(startupStoryToEdit.getAuthorName())) ? "" : startupStoryToEdit.getAuthorName());
+        holder.etStory.setText((TextUtils.isEmpty(startupStoryToEdit.getStory())) ? "" : startupStoryToEdit.getStory());
+
+        if (!TextUtils.isEmpty(startupStoryToEdit.getPhotoLocation())) {
+            Glide.with(this)
+                    .load(startupStoryToEdit.getPhotoLocation())
+                    .into(holder.ivAddStartupStoryImage);
+            startupStory.setPhotoLocation(startupStoryToEdit.getPhotoLocation());
+        }
+
+        startupStory.setStoryId(startupStoryToEdit.getStoryId());
+        startupStory.setPostedOn(startupStoryToEdit.getPostedOn());
+
+        holder.buttonSaveStartupStory.setText("Save Startup Story");
+
+    }
+
     private void saveStartupStory() {
         holder.startLoading();
-        startupStoryReference = FirebaseDatabase.getInstance().getReference("StartupStories").push();
-        startupStory.setStoryId(startupStoryReference.getKey());
-        startupStory.setPostedOn(getCurrentDate());
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("StartupStories");
+
+        if (TextUtils.isEmpty(startupStory.getStoryId())) {
+            startupStoryReference = ref.push();
+            startupStory.setStoryId(startupStoryReference.getKey());
+            startupStory.setPostedOn(getCurrentDate());
+        } else {
+            startupStoryReference = ref.child(startupStory.getStoryId());
+        }
 
         startupStoryReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 startupStoryReference.setValue(startupStory).addOnSuccessListener(aVoid -> {
                     holder.stopLoading();
-                    Toast.makeText(AddStartupStoryActivity.this, "Startup story created and posted successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddStartupStoryActivity.this, "Startup story saved and posted successfully", Toast.LENGTH_LONG).show();
                     finish();
                 });
             }
@@ -128,7 +159,7 @@ public class AddStartupStoryActivity extends AppCompatActivity {
                         .getInstance()
                         .getReference()
                         .child("StartupStoryPhotos/startup-story-photo-"
-                                + getTimeStampForPhotos()
+                                + getTimeStamp()
                                 + fileExtension);
 
                 ref.putFile(fileUri)

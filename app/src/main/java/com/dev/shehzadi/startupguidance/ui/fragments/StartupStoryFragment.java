@@ -3,6 +3,7 @@ package com.dev.shehzadi.startupguidance.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -54,7 +55,10 @@ public class StartupStoryFragment extends Fragment {
 
         getActivity().setTitle("Startup stories");
 
-        ((HomeActivity)getActivity()).getFAB().setOnClickListener(view -> {
+        FloatingActionButton fab = ((HomeActivity)getActivity()).getFAB();
+        fab.setVisibility(View.VISIBLE);
+
+        fab.setOnClickListener(view -> {
             Intent addStartupStoryIntent = new Intent(getActivity(), AddStartupStoryActivity.class);
             startActivity(addStartupStoryIntent);
         });

@@ -13,7 +13,7 @@ public class ChatModel implements Serializable {
     private String chatMessage;
     private String fromUid;
     private String toUid;
-    private Date chatTime;
+    private String chatTime;
 
     public ChatModel() {
     }
@@ -50,11 +50,11 @@ public class ChatModel implements Serializable {
         this.toUid = toUid;
     }
 
-    public Date getChatTime() {
+    public String getChatTime() {
         return chatTime;
     }
 
-    public void setChatTime(Date chatTime) {
+    public void setChatTime(String chatTime) {
         this.chatTime = chatTime;
     }
 }

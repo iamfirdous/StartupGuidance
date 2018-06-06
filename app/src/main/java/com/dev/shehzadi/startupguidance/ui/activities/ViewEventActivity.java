@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,9 +47,9 @@ public class ViewEventActivity extends AppCompatActivity {
             holder.fabEdit.setVisibility(View.VISIBLE);
 
             holder.fabEdit.setOnClickListener(view -> {
-                Intent viewEvent = new Intent(this, AddEventActivity.class);
-                viewEvent.putExtra("event", event);
-                startActivity(viewEvent);
+                Intent editEvent = new Intent(this, AddEventActivity.class);
+                editEvent.putExtra("event", event);
+                startActivity(editEvent);
             });
         }
 
@@ -75,6 +76,20 @@ public class ViewEventActivity extends AppCompatActivity {
         holder.tvRegLastDate.setText(getFormattedDate(event.getRegistrationLastDate(), NON_HYPHENATED_PATTERN));
         holder.tvRegFee.setText("" + event.getRegistrationFee());
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return true;
     }
 
     class ViewEventViewHolder {

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dev.shehzadi.startupguidance.R;
 import com.dev.shehzadi.startupguidance.models.UserModel;
+import com.dev.shehzadi.startupguidance.ui.fragments.ChatUsersFragment;
 import com.dev.shehzadi.startupguidance.ui.fragments.EventFragment;
 import com.dev.shehzadi.startupguidance.ui.fragments.StartupStoryFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -179,6 +180,9 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.nav_startup_stories:
                 manager.beginTransaction().replace(R.id.content_main, new StartupStoryFragment()).commit();
+                break;
+            case R.id.nav_chat:
+                manager.beginTransaction().replace(R.id.content_main, new ChatUsersFragment()).commit();
                 break;
         }
 

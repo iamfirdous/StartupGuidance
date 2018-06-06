@@ -46,7 +46,7 @@ import static com.dev.shehzadi.startupguidance.utils.Util.HYPHENATED_PATTERN;
 import static com.dev.shehzadi.startupguidance.utils.Util.NON_HYPHENATED_PATTERN;
 import static com.dev.shehzadi.startupguidance.utils.Util.getFileExtensionFromUri;
 import static com.dev.shehzadi.startupguidance.utils.Util.getFormattedDate;
-import static com.dev.shehzadi.startupguidance.utils.Util.getTimeStampForPhotos;
+import static com.dev.shehzadi.startupguidance.utils.Util.getTimeStamp;
 
 public class AddEventActivity extends AppCompatActivity {
 
@@ -174,7 +174,7 @@ public class AddEventActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventReference.setValue(event).addOnSuccessListener(aVoid -> {
                     holder.stopLoading();
-                    Toast.makeText(AddEventActivity.this, "Event created and posted successfully", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddEventActivity.this, "Event saved and posted successfully", Toast.LENGTH_LONG).show();
                     finish();
                 });
             }
@@ -199,7 +199,7 @@ public class AddEventActivity extends AppCompatActivity {
                                             .getInstance()
                                             .getReference()
                                             .child("EventPhotos/event-photo-"
-                                                    + getTimeStampForPhotos()
+                                                    + getTimeStamp()
                                                     + fileExtension);
 
                 ref.putFile(fileUri)

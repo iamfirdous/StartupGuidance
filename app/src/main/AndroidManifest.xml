@@ -47,6 +47,7 @@
         <activity
             android:name=".ui.activities.AddStartupStoryActivity"
             android:label="Create new startup story" />
+        <activity android:name=".ui.activities.ChatActivity"></activity>
     </application>
 
 </manifest>

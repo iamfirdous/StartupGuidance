@@ -1,23 +1,21 @@
 package com.dev.shehzadi.startupguidance.ui.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.dev.shehzadi.startupguidance.R;
-import com.dev.shehzadi.startupguidance.models.EventModel;
-import com.dev.shehzadi.startupguidance.ui.activities.AddEventActivity;
+import com.dev.shehzadi.startupguidance.models.UserModel;
 import com.dev.shehzadi.startupguidance.ui.activities.HomeActivity;
-import com.dev.shehzadi.startupguidance.ui.adapters.EventAdapter;
+import com.dev.shehzadi.startupguidance.ui.adapters.ChatUsersAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,23 +23,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EventFragment extends Fragment {
+public class ChatUsersFragment extends Fragment {
 
-    public EventFragment() {
+
+    public ChatUsersFragment() {
         // Required empty public constructor
     }
 
     private View view;
     private FrameLayout frameLayoutProgressBar;
     private RecyclerView recyclerView;
-    private EventAdapter adapter;
-    private List<EventModel> events;
+
+    private ChatUsersAdapter adapter;
+    private List<UserModel> users;
 
     private boolean loaded = false;
 
@@ -49,20 +48,15 @@ public class EventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_event, container, false);
+        view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        getActivity().setTitle("Upcoming events");
+        getActivity().setTitle("Select a guide to chat");
 
         FloatingActionButton fab = ((HomeActivity)getActivity()).getFAB();
-        fab.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.GONE);
 
-        fab.setOnClickListener(view -> {
-            Intent addEventIntent = new Intent(getActivity(), AddEventActivity.class);
-            startActivity(addEventIntent);
-        });
-
-        frameLayoutProgressBar = view.findViewById(R.id.frameLayout_progressBar_event);
-        recyclerView = view.findViewById(R.id.recyclerView_event);
+        frameLayoutProgressBar = view.findViewById(R.id.frameLayout_progressBar_chatList);
+        recyclerView = view.findViewById(R.id.recyclerView_users_chatList);
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -70,8 +64,8 @@ public class EventFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(manager);
 
-        events = new ArrayList<>();
-        adapter = new EventAdapter(getContext(), events);
+        users = new ArrayList<>();
+        adapter = new ChatUsersAdapter(getContext(), users);
 
         recyclerView.setAdapter(adapter);
 
@@ -81,16 +75,19 @@ public class EventFragment extends Fragment {
     }
 
     public void initView(){
-        DatabaseReference eventsReference = FirebaseDatabase.getInstance().getReference("Events");
+        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference("Users");
 
-        eventsReference.addValueEventListener(new ValueEventListener() {
+        usersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!loaded)
                     frameLayoutProgressBar.setVisibility(View.VISIBLE);
-                events.clear();
+                users.clear();
                 for (DataSnapshot eventSnapshot: dataSnapshot.getChildren()) {
-                    events.add(eventSnapshot.getValue(EventModel.class));
+                    UserModel user = eventSnapshot.getValue(UserModel.class);
+                    if (user.isSuperUser() && user.isGivingGuidance() && !user.getUid().equals(FirebaseAuth.getInstance().getUid())){
+                        users.add(user);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 frameLayoutProgressBar.setVisibility(View.GONE);

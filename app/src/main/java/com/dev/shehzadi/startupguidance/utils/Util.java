@@ -28,6 +28,7 @@ public class Util {
 
     public static String HYPHENATED_PATTERN = "dd-MM-yyyy";
     public static String NON_HYPHENATED_PATTERN = "ddMMyyyy";
+    public static String TIMESTAMP_PATTERN = "yyyyMMdd-HHmmss";
 
     public static boolean isValidEmail(String email){
         Matcher matcher = emailPattern.matcher(email);
@@ -50,8 +51,8 @@ public class Util {
         return (fromPattern.equals(HYPHENATED_PATTERN)) ? d + m + y : d + "-" + m + "-" + y;
     }
 
-    public static String getTimeStampForPhotos() {
-        return new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
+    public static String getTimeStamp() {
+        return new SimpleDateFormat(TIMESTAMP_PATTERN).format(new Date());
     }
 
     public static String getCurrentDate() {
